@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love Surprise ❤️</title>
+
+<style>
+body{
+    margin:0;
+    background:#ff5f7e;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    font-family:Arial, sans-serif;
+}
+
+/* FIREWORK CANVAS */
+canvas{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+}
+
+/* STORY CARD */
+.story{
+    width:360px;
+    height:640px;
+    background:#fff;
+    border-radius:30px;
+    box-shadow:0 20px 50px rgba(0,0,0,.4);
+    position:relative;
+    z-index:2;
+    overflow:hidden;
+}
+
+/* LOCK SCREEN */
+.lock{
+    position:absolute;
+    inset:0;
+    background:#ff4d6d;
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    z-index:5;
+}
+.lock input{
+    padding:10px;
+    border:none;
+    border-radius:20px;
+    margin-top:10px;
+}
+.lock button{
+    padding:10px 20px;
+    border:none;
+    border-radius:20px;
+    margin-top:10px;
+}
+
+/* CONTENT */
+.content{
+    padding:20px;
+    text-align:center;
+    opacity:0;
+}
+
+/* SLIDER */
+.slider{
+    background:linear-gradient(135deg,#000,#222);
+}
+..slider{
+    width:100%;
+    max-height:320px;
+    background:#000;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.slides{
+    display:flex;
+    transition:0.4s ease;
+}
+
+.slide{
+    min-width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.slide img{
+    max-width:100%;
+    max-height:320px;
+    width:auto;
+    height:auto;
+    object-fit:contain;
+}
+
+/* POPUP */
+.popup{
+    position:absolute;
+    inset:0;
+    background:rgba(255,255,255,0.95);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:36px;
+    color:#e63946;
+    opacity:0;
+    z-index:4;
+}
+.popup.show{opacity:1;}
+</style>
+</head>
+
+<body>
+
+<canvas id="fireworks"></canvas>
+<audio id="music" src="music.mp3" loop></audio>
+
+<div class="story">
+
+    <!-- LOCK -->
+    <div class="lock" id="lock">
+        <h2>Enter Password 💖</h2>
+        <input id="pass" placeholder="love">
+        <button onclick="unlock()">Unlock</button>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content" id="content">
+        <h2 id="title"></h2>
+
+        <div class="slider" id="slider">
+            <div class="slides" id="slides">
+                <!-- 18 IMAGES -->
+                <div class="slide"><img src="img1.jpg"></div>
+                <div class="slide"><img src="img2.jpg"></div>
+                <div class="slide"><img src="img3.jpg"></div>
+                <div class="slide"><img src="img4.jpg"></div>
+                <div class="slide"><img src="img5.jpg"></div>
+                <div class="slide"><img src="img6.jpg"></div>
+                <div class="slide"><img src="img7.jpg"></div>
+                <div class="slide"><img src="img8.jpg"></div>
+                <div class="slide"><img src="img9.jpg"></div>
+                <div class="slide"><img src="img10.jpg"></div>
+                <div class="slide"><img src="img11.jpg"></div>
+                <div class="slide"><img src="img12.jpg"></div>
+                <div class="slide"><img src="img13.jpg"></div>
+                <div class="slide"><img src="img14.jpg"></div>
+                <div class="slide"><img src="img15.jpg"></div>
+                <div class="slide"><img src="img16.jpg"></div>
+                <div class="slide"><img src="img17.jpg"></div>
+                <div class="slide"><img src="img18.jpg"></div>
+            </div>
+        </div>
+
+        <p id="message"></p>
+        <p>— <b id="yourName"></b></p>
+    </div>
+
+    <div class="popup" id="popup">I Love You ❤️<br>Mera Pyara Bachha 😘 </div>
+</div>
+
+<script>
+/* ================= SETTINGS ================= */
+const PASSWORD = "Chudail";
+const TOTAL_SLIDES = 18;
+const YOUR_NAME = "Aapka Khaduswan";     // ✏️ change if needed
+const HER_NAME = "Anugya";       // ✏️ change this
+
+/* MESSAGE */
+const LOVE_MESSAGE = `
+Dear ${HER_NAME},
+काश तुम पूछो मुझे क्या चाहुए ❤️
+मैं  पकडू हाथ आपका और कहूं तेरा साथ चाहिए। 💕
+
+I love you ❤️
+`;
+
+/* SET TEXT */
+window.onload = () => {
+    title.innerText = `Happy Rose Day 🌹 Meri Pyari Kuchikuchiku 🐥`;
+    message.innerText = LOVE_MESSAGE;
+    yourName.innerText = YOUR_NAME;
+};
+
+/* UNLOCK */
+function unlock(){
+    if(pass.value !== PASSWORD){
+        alert("Wrong password 😜");
+        return;
+    }
+    lock.style.display = "none";
+    content.style.opacity = 1;
+    music.play();
+    startFireworks();
+    setTimeout(()=>popup.classList.add("show"), TOTAL_SLIDES * 1500);
+}
+
+/* SLIDER SWIPE */
+let index = 0, startX = 0;
+slider.addEventListener("touchstart", e => startX = e.touches[0].clientX);
+slider.addEventListener("touchend", e => {
+    let diff = e.changedTouches[0].clientX - startX;
+    if(diff > 50) index--;
+    if(diff < -50) index++;
+    index = (index + TOTAL_SLIDES) % TOTAL_SLIDES;
+    slides.style.transform = `translateX(-${index*100}%)`;
+});
+
+/* AUTO SLIDE */
+setInterval(()=>{
+    index = (index + 1) % TOTAL_SLIDES;
+    slides.style.transform = `translateX(-${index*100}%)`;
+},1500);
+
+/* FIREWORKS (FIXED & VISIBLE) */
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+let particles = [];
+
+function resizeCanvas(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeCanvas);
+
+function createFirework(){
+    const x = Math.random()*canvas.width;
+    const y = Math.random()*canvas.height*0.4;
+    const color = `hsl(${Math.random()*360},100%,60%)`;
+    for(let i=0;i<50;i++){
+        particles.push({
+            x,y,
+            vx:(Math.random()-0.5)*6,
+            vy:(Math.random()-0.5)*6,
+            life:60,
+            color
+        });
+    }
+}
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach((p,i)=>{
+        p.x+=p.vx; p.y+=p.vy; p.life--;
+        ctx.fillStyle=p.color;
+        ctx.fillRect(p.x,p.y,3,3);
+        if(p.life<=0) particles.splice(i,1);
+    });
+    requestAnimationFrame(animate);
+}
+
+function startFireworks(){
+    resizeCanvas();
+    animate();
+    setInterval(createFirework,700);
+}
+</script>
+
+</body>
+</html>
